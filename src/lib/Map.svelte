@@ -1,30 +1,52 @@
 <script>
+  import { createEventDispatcher } from "svelte";
+
   import Map from "@arcgis/core/Map";
   import MapView from "@arcgis/core/views/MapView";
   import "@arcgis/core/assets/esri/themes/light/main.css";
+  import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
+  import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
+
+  export let vectorTileLayerUrl;
+  export let visibleStyleLayerIds;
+
+  const dispatch = createEventDispatcher();
+
+  let mapView;
 
   const createMap = (domNode) => {
-    // Create the map
     const map = new Map({
       basemap: "streets-vector",
     });
-    // Create the mapView from the map
+
     const view = new MapView({
       container: domNode,
       map: map,
-      zoom: 8,
-      center: [-90, 38], // longitude, latitude
+      zoom: 4,
+      center: [0, 55], // longitude, latitude
     });
-    // Use the watch functionality of the JavaScript API (view.watch) to call a
-    // function every time the extent changes. Every time it does, update the
-    // "centerText" variable - Svelte takes care of updating the UI based
-    // on this variable assignment
-    // (Reactivity!) https://svelte.dev/tutorial/reactive-assignments
-    // view.watch("center", (center) => {
-    //   const { latitude, longitude } = center;
-    //   centerText = `Lat: ${latitude.toFixed(2)} | Lon: ${longitude.toFixed(2)}`;
-    // });
+
+    view.when(() => {
+      mapView = view;
+    });
   };
+
+  $: if (visibleStyleLayerIds) {
+    console.log("MAP - CHANGE", visibleStyleLayerIds);
+  }
+
+  $: if (mapView && vectorTileLayerUrl) {
+    console.log("ADD LAYER", vectorTileLayerUrl);
+    const vtl = new VectorTileLayer({
+      url: vectorTileLayerUrl,
+    });
+    mapView.map.add(vtl);
+    reactiveUtils
+      .whenOnce(() => vtl.loaded)
+      .then(() => {
+        dispatch("vectorTileLayerLoaded", vtl.currentStyleInfo);
+      });
+  }
 </script>
 
 <!-- use:createMap calls the "createMap" function (defined above) when the  -->
