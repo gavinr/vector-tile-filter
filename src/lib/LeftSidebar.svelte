@@ -4,17 +4,15 @@
 
   const dispatch = createEventDispatcher();
 
-  export let initialVisibleStyleLayerIds;
+  export let initialStyleLayerInfos;
 
   let rowItems;
 
-  $: if (initialVisibleStyleLayerIds) {
-    rowItems = initialVisibleStyleLayerIds.map((x) => {
-      return {
-        id: x,
-        label: x,
-        checked: true,
-      };
+  $: if (initialStyleLayerInfos) {
+    rowItems = initialStyleLayerInfos.map((x) => {
+      const clone = JSON.parse(JSON.stringify(x));
+      clone.checked = true;
+      return clone;
     });
   }
 
@@ -26,13 +24,14 @@
   }
 </script>
 
-<h2>Left Sidebar</h2>
+<h2>Layers</h2>
 <div>
   {#if rowItems}
     {#each rowItems as slv}
       <LayerListRow
         label={slv.label}
         checked={slv.checked}
+        color={slv.color}
         on:change={(evt) => {
           slv.checked = evt.detail;
         }}

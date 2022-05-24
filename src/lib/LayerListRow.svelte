@@ -3,7 +3,7 @@
   const dispatch = createEventDispatcher();
 
   export let label = "";
-  //   export let color;
+  export let color;
   export let checked = true;
 
   $: {
@@ -17,9 +17,9 @@
     checked = !checked;
   }}
 >
-  <!-- <div
+  <div
     style={`display: inline-block; vertical-align: top; width: 50px; height: 24px; background-color: ${color}`}
-  /> -->
+  />
   <span
     style="font-size: 24px; vertical-align: middle"
     class:esri-icon-non-visible={!checked}

@@ -9,7 +9,6 @@
 
   export let vectorTileLayerUrl;
   export let visibleStyleLayerIds;
-  export let initialVisibleStyleLayerIds;
 
   let vectorTileLayer;
 
@@ -19,14 +18,14 @@
 
   const createMap = (domNode) => {
     const map = new Map({
-      basemap: "streets-vector",
+      basemap: "gray-vector",
     });
 
     const view = new MapView({
       container: domNode,
       map: map,
-      zoom: 4,
-      center: [0, 55], // longitude, latitude
+      zoom: 1,
+      center: [0, 0], // longitude, latitude
     });
 
     view.when(() => {
@@ -36,14 +35,13 @@
 
   $: if (
     vectorTileLayer &&
-    initialVisibleStyleLayerIds &&
-    initialVisibleStyleLayerIds.length > 0 &&
+    "currentStyleInfo" in vectorTileLayer &&
     visibleStyleLayerIds
   ) {
-    initialVisibleStyleLayerIds.forEach((layerId) => {
+    vectorTileLayer.currentStyleInfo.style.layers.forEach((layer) => {
+      const layerId = layer.id;
       const visible =
         visibleStyleLayerIds.indexOf(layerId) > -1 ? "visible" : "none";
-      console.log("setting", layerId, visible);
       vectorTileLayer.setStyleLayerVisibility(layerId, visible);
     });
   }
@@ -58,6 +56,8 @@
       .then(() => {
         vectorTileLayer = vtl;
         dispatch("vectorTileLayerLoaded", vtl.currentStyleInfo);
+        console.log("vtl.currentStyleInfo", vtl.currentStyleInfo);
+        mapView.goTo(vtl.currentStyleInfo.layerDefinition.initialExtent);
       });
   }
 </script>
