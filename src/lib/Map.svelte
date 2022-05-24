@@ -9,6 +9,9 @@
 
   export let vectorTileLayerUrl;
   export let visibleStyleLayerIds;
+  export let initialVisibleStyleLayerIds;
+
+  let vectorTileLayer;
 
   const dispatch = createEventDispatcher();
 
@@ -31,12 +34,21 @@
     });
   };
 
-  $: if (visibleStyleLayerIds) {
-    console.log("MAP - CHANGE", visibleStyleLayerIds);
+  $: if (
+    vectorTileLayer &&
+    initialVisibleStyleLayerIds &&
+    initialVisibleStyleLayerIds.length > 0 &&
+    visibleStyleLayerIds
+  ) {
+    initialVisibleStyleLayerIds.forEach((layerId) => {
+      const visible =
+        visibleStyleLayerIds.indexOf(layerId) > -1 ? "visible" : "none";
+      console.log("setting", layerId, visible);
+      vectorTileLayer.setStyleLayerVisibility(layerId, visible);
+    });
   }
 
   $: if (mapView && vectorTileLayerUrl) {
-    console.log("ADD LAYER", vectorTileLayerUrl);
     const vtl = new VectorTileLayer({
       url: vectorTileLayerUrl,
     });
@@ -44,6 +56,7 @@
     reactiveUtils
       .whenOnce(() => vtl.loaded)
       .then(() => {
+        vectorTileLayer = vtl;
         dispatch("vectorTileLayerLoaded", vtl.currentStyleInfo);
       });
   }

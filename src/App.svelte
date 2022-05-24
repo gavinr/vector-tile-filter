@@ -9,38 +9,34 @@
     "https://tiles.arcgis.com/tiles/1ZHcUS1lwPTg4ms0/arcgis/rest/services/NCN_Vector_Tile_Package/VectorTileServer";
 
   let visibleStyleLayerIds;
+  let initialVisibleStyleLayerIds;
 
   const vectorTileLayerLoadedHandler = (evt) => {
     const currentStyleInfo = evt.detail;
     console.log("new vector tile layer...", currentStyleInfo);
 
-    visibleStyleLayerIds = currentStyleInfo.style.layers.map((x) => x.id);
-
-    // styleLayersVisibility = currentStyleInfo.style.layers.map((styleLayer) => {
-    //   return {
-    //     id: styleLayer.id,
-    //     checked: true,
-    //     label: styleLayer.id,
-    //   };
-    // });
+    initialVisibleStyleLayerIds = currentStyleInfo.style.layers.map(
+      (x) => x.id
+    );
   };
 
   const visibleLayersChangeHandler = (evt) => {
-    console.log("change", evt.detail);
-    // visibleStyleLayerIds = evt.detail;
+    visibleStyleLayerIds = evt.detail;
   };
 </script>
 
 <div class="wrapper">
   <div>
     <LeftSidebar
-      {visibleStyleLayerIds}
+      {initialVisibleStyleLayerIds}
       on:change={visibleLayersChangeHandler}
     />
   </div>
   <Map
     {vectorTileLayerUrl}
     on:vectorTileLayerLoaded={vectorTileLayerLoadedHandler}
+    {initialVisibleStyleLayerIds}
+    {visibleStyleLayerIds}
   />
 </div>
 

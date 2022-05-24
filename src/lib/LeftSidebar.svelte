@@ -4,16 +4,12 @@
 
   const dispatch = createEventDispatcher();
 
-  export let visibleStyleLayerIds;
+  export let initialVisibleStyleLayerIds;
 
   let rowItems;
 
-  //   $: if (styleLayersVisibilityMap) {
-  //     const currentStyleInfo = vectorTileLayer.currentStyleInfo;
-  //     console.log("currentStyleInfo", currentStyleInfo);
-  //   }
-  $: if (visibleStyleLayerIds) {
-    rowItems = visibleStyleLayerIds.map((x) => {
+  $: if (initialVisibleStyleLayerIds) {
+    rowItems = initialVisibleStyleLayerIds.map((x) => {
       return {
         id: x,
         label: x,
@@ -27,7 +23,6 @@
       .filter((x) => x.checked === true)
       .map((x) => x.id);
     dispatch("change", checkedLayers);
-    // visibleStyleLayerIds = checkedLayers;
   }
 </script>
 
