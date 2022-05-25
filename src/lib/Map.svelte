@@ -17,9 +17,7 @@
   let mapView;
 
   const createMap = (domNode) => {
-    const map = new Map({
-      basemap: "gray-vector",
-    });
+    const map = new Map();
 
     const view = new MapView({
       container: domNode,
@@ -29,8 +27,9 @@
     });
 
     view.when(() => {
-      mapView = view;
+      console.log("here0");
     });
+    mapView = view;
   };
 
   $: if (
@@ -56,8 +55,8 @@
       .then(() => {
         vectorTileLayer = vtl;
         dispatch("vectorTileLayerLoaded", vtl.currentStyleInfo);
-        console.log("vtl.currentStyleInfo", vtl.currentStyleInfo);
-        mapView.goTo(vtl.currentStyleInfo.layerDefinition.initialExtent);
+        console.log("vtl", vtl);
+        mapView.goTo(vtl.primarySource.fullExtent);
       });
   }
 </script>

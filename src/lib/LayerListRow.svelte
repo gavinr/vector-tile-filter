@@ -3,7 +3,7 @@
   const dispatch = createEventDispatcher();
 
   export let label = "";
-  export let color;
+  export let css;
   export let checked = true;
 
   $: {
@@ -18,20 +18,25 @@
   }}
 >
   <div
-    style={`display: inline-block; vertical-align: top; width: 50px; height: 24px; background-color: ${color}`}
+    style={`display: inline-block; vertical-align: top; width: 50px; height: 24px; ${css}`}
   />
   <span
     style="font-size: 24px; vertical-align: middle"
     class:esri-icon-non-visible={!checked}
     class:esri-icon-visible={checked}
+    title={checked ? "Click to hide" : "Click to show"}
   />
-  <span class="labelSpan">{label}</span>
+  <span class="labelSpan" title={label}>{label}</span>
 </div>
 
 <style>
   .line {
     margin-bottom: 10px;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    /* text-overflow: ellipsis; */
+    max-width: 100%;
   }
   .labelSpan {
     display: inline-block;

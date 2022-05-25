@@ -24,22 +24,29 @@
   }
 </script>
 
-<h2>Layers</h2>
-<div>
-  {#if rowItems}
-    {#each rowItems as slv}
-      <LayerListRow
-        label={slv.label}
-        checked={slv.checked}
-        color={slv.color}
-        on:change={(evt) => {
-          slv.checked = evt.detail;
-        }}
-      />
-    {/each}
-  {/if}
+<div class="wrapper">
+  <h2>Layers</h2>
+  <div>
+    {#if rowItems}
+      {#each rowItems as slv}
+        <LayerListRow
+          label={slv.label}
+          checked={slv.checked}
+          css={slv.css}
+          on:change={(evt) => {
+            slv.checked = evt.detail;
+          }}
+        />
+      {/each}
+    {/if}
+  </div>
 </div>
 
 <style>
-  /* your styles go here */
+  .wrapper {
+    max-width: 25%;
+    max-height: 100%;
+    overflow-y: scroll;
+    padding: 5px;
+  }
 </style>

@@ -2,12 +2,15 @@
   import LeftSidebar from "./lib/LeftSidebar.svelte";
   import Map from "./lib/Map.svelte";
   import "./main.css";
-  import { getColorForStyleLayer } from "./utils/vectorTileLayerUtils";
+  import { getCSSForStyleLayer } from "./utils/vectorTileLayerUtils";
 
-  // "http://www.arcgis.com/sharing/rest/content/items/4cf7e1fb9f254dcda9c8fbadb15cf0f8/resources/styles/root.json"
-  // https://tiles.arcgis.com/tiles/1ZHcUS1lwPTg4ms0/arcgis/rest/services/NCN_Vector_Tile_Package/VectorTileServer
   let vectorTileLayerUrl =
-    "https://tiles.arcgis.com/tiles/1ZHcUS1lwPTg4ms0/arcgis/rest/services/NCN_Vector_Tile_Package/VectorTileServer";
+    "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer";
+  // let vectorTileLayerUrl =
+  //   "https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_v2/VectorTileServer";
+  // let vectorTileLayerUrl =
+  //   "https://www.arcgis.com/sharing/rest/content/items/80be160f0ca1413d898ad4e90d197278/resources/styles/root.json";
+  // let vectorTileLayerUrl ="https://tiles.arcgis.com/tiles/1ZHcUS1lwPTg4ms0/arcgis/rest/services/NCN_Vector_Tile_Package/VectorTileServer";
 
   let visibleStyleLayerIds;
   let initialStyleLayerInfos;
@@ -17,11 +20,11 @@
     console.log("new vector tile layer...", currentStyleInfo);
 
     initialStyleLayerInfos = currentStyleInfo.style.layers.map((x) => {
-      const color = getColorForStyleLayer(x);
+      const css = getCSSForStyleLayer(x);
       return {
         id: x.id,
         label: x.id,
-        color: color,
+        css: css,
       };
     });
   };
@@ -32,12 +35,10 @@
 </script>
 
 <div class="wrapper">
-  <div>
-    <LeftSidebar
-      {initialStyleLayerInfos}
-      on:change={visibleLayersChangeHandler}
-    />
-  </div>
+  <LeftSidebar
+    {initialStyleLayerInfos}
+    on:change={visibleLayersChangeHandler}
+  />
   <Map
     {vectorTileLayerUrl}
     on:vectorTileLayerLoaded={vectorTileLayerLoadedHandler}
